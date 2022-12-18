@@ -1,0 +1,15 @@
+.list {
+   width: 30vw;
+ }
+ 
+ .item {
+   display: flex;
+   justify-content: space-between;
+   margin-bottom: 5px;
+ }
+ 
+ .deleteBtn {
+   padding: 5px 10px;
+
+   cursor: pointer;
+ }
