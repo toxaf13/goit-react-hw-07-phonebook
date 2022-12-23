@@ -1,9 +1,7 @@
-import { useDispatch } from 'react-redux';
-import { filterContacts } from 'redux/phoneBook';
+import PropTypes from 'prop-types';
 import style from './Filter.module.css';
 
-const Filter = () => {
-  const dispatch = useDispatch();
+export default function Filter({filter, onChange}) {
 
   return (
     <label className={style.label}>
@@ -12,10 +10,15 @@ const Filter = () => {
         className={style.filterInput}
         type="text"
         name="filter"
-        onChange={e => dispatch(filterContacts(e.target.value.toLowerCase()))}
+        value={filter}
+        onChange={e => onChange(e.target.value)}
+        required
       />
     </label>
   );
 };
 
-export default Filter;
+Filter.propTypes = {
+   filter: PropTypes.string.isRequired,
+   onChange: PropTypes.func.isRequired,
+ };

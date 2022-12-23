@@ -1,27 +1,38 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addContact } from 'redux/phoneBook';
+import {  useAddContactMutation, useGetContactsQuery } from 'redux/contactsApi';
 import style from './ContactForm.module.css';
 
-function ContactForm() {
-  const dispatch = useDispatch();
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+export default function ContactForm() {
+   const [name, setName] = useState('');
+   const [number, setNumber] = useState('');
+
+   const {data} = useGetContactsQuery();
+   const [addContact] = useAddContactMutation();
 
   const onSubmit = e => {
-    e.preventDefault();
-    dispatch(addContact({ name, number }));
-    formReset();
+   e.preventDefault();
+
+    data.some(contact => contact.name === name)
+      ? alert(`${name} is already in contacts`)
+      : addContact({
+          name: name,
+          phone: number,
+        });
+
+    setName('');
+    setNumber('');
   };
 
+
   const onChange = e => {
-    switch (e.currentTarget.name) {
+   const {name, value } = e.target;
+    switch (name) {
       case 'name':
-        setName(e.currentTarget.value);
+        setName(value);
         break;
 
       case 'number':
-        setNumber(e.currentTarget.value);
+        setNumber(value);
         break;
 
       default:
@@ -29,11 +40,7 @@ function ContactForm() {
     }
   };
 
-  const formReset = () => {
-    setName('');
-    setNumber('');
-  };
-
+  
   return (
     <form className={style.form} onSubmit={onSubmit}>
       <label className={style.label}>
@@ -68,5 +75,3 @@ function ContactForm() {
     </form>
   );
 }
-
-export default ContactForm;

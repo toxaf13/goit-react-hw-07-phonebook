@@ -1,30 +1,28 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { deleteContact } from 'redux/phoneBook';
+import { useGetContactsQuery } from 'redux/contactsApi';
+import Contact from './Contact';
+import PropTypes from 'prop-types';
 import style from './ContactList.module.css';
 
-const ContactList = () => {
-  const contacts = useSelector(state => state.phoneBook.items);
-  const filter = useSelector(state => state.phoneBook.filter);
-  const dispatch = useDispatch();
+export default function  ContactList  ({ filter }) {
+   const { data } = useGetContactsQuery();
 
-  return (
-    <ul className={style.list}>
-      {contacts
-        .filter(el => el.name.toLowerCase().includes(filter))
-        .map(({ id, number, name }) => (
-          <li className={style.item} key={id}>
-            {name}: {number}
-            <button
-              className={style.deleteBtn}
-              type="button"
-              onClick={() => dispatch(deleteContact({ id }))}
-            >
-              Delete
-            </button>
-          </li>
-        ))}
-    </ul>
-  );
+   const itemsFiltered = data?.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase())
+    );
+
+    if (itemsFiltered){
+
+      return (
+         <ul className={style.list}>
+           {itemsFiltered.map( ({id,name,phone}) => (
+            <li key = {id}>
+               <Contact id={id} name={name} number={phone}/>  
+            </li>
+             ))}
+         </ul>
+       );
+    }  
 };
-
-export default ContactList;
+ContactList.propTypes = {
+   filter: PropTypes.string.isRequired,
+ };
